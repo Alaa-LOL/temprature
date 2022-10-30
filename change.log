@@ -1,0 +1,59 @@
+float Temperature, Voltage;
+char* TempSTR[16];
+
+
+// adc driver
+/*
+void ADC_Init()
+{
+    ADCON0 = 0x41;  // Turn ADC ON, Select AN0 Channel, ADC Clock = Fosc/8
+    ADCON1 = 0x80;  // All 8 Channels Are Analog, Result is "Right-Justified"
+                    // ADC Clock = Fosc/8
+}
+uint16_t ADC_Read(uint8_t ANC)
+{
+    if(ANC<0 || ANC>7)    // Check Channel Number Validity
+    { return 0;}
+    ADCON0 &= 0x11000101; // Clear The Channel Selection Bits
+    ADCON0 |= ANC<<3;     // Select The Required Channel (ANC)
+                          // Wait The Aquisition Time
+    __delay_us(30);       // The Minimum Tacq = 20us, So That should be enough
+    GO_DONE = 1;          // Start A/D Conversion
+    while(ADCON0bits.GO_DONE); // Polling GO_DONE Bit
+                               // Provides Delay Until Conversion Is Complete
+    return ((ADRESH << 8) + ADRESL); // Return The Right-Justified 10-Bit Result
+}*/
+
+
+
+
+//ex-
+/* [Assuming 10-Bit ADC with Vref=5v and Temperature Sensor Transfer Function of 10mV/°C]
+
+Let’s start with an A/D Result of 100
+
+=> ADRES = 100
+So, The Sensor’s Output Voltage (VOUT) is calculated as follows
+
+=> ADC_Resolution = FSR/2^10 = 5v/1024 = 4.88mV
+
+=> VOUT = ADC_Resolution x ADRES = 0.488Volts
+Therefore, The Temperature Measured By The Sensor is as follows
+
+=> Temperature = VOUT/10mV = 48.82°C */
+
+
+
+
+	
+	
+char Read_temprature(uint16_t AN0RES)	
+{
+AN0RES =0;  //reset read
+AN0RES = ADC_Read(0);  // Read The ADC
+Voltage = AN0RES * 0.0048828//adc resultion//; // Calculate The Temperature
+Temperature = Voltage / 0.01; 
+sprintf(TempSTR, " %.3fc", Temperature); // Convert The Temperature From Float To String
+return TempSTR;
+}
+	
